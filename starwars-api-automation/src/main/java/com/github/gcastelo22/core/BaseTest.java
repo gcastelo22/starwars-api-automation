@@ -103,4 +103,16 @@ public class BaseTest {
       throw new Exception("Field '" + field + "' not found in the response payload.");
     }
   }
+
+  /**
+   * Cleans JSON formatting characters from a string.
+   * Useful when extracting values from arrays or raw JSON tokens.
+   */
+  public String sanitizeJsonValue(String value) {
+    if (value == null) return null;
+    return value.replace("[", "")
+        .replace("]", "")
+        .replace("\"", "")
+        .trim();
+  }
 }

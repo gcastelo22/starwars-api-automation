@@ -66,4 +66,26 @@ public class PeoplesTest extends BaseTest {
     // Success Logging
     LOG.info("Assertion Passed: Resource correctly returned 404 and the '" + actualDetail + "' message.");
   }
+
+  @Test
+  public void testCharacterFilmCorrelation() throws Throwable {
+    String personResponse = call("https://swapi.dev/api/people/1", null, 200, "get", null);
+
+    // SANITIZE the extracted URL to remove brackets and quotes
+    String rawFilmUrl = extractFieldFromJson(personResponse, "films");
+    String firstFilmUrl = sanitizeJsonValue(rawFilmUrl);
+
+    LOG.info("Correlation Step: Extracted and sanitized film URL: " + firstFilmUrl);
+
+    // Now the call will work because the URL is clean
+    String filmResponse = call(firstFilmUrl, null, 200, "get", null);
+
+    String title = extractFieldFromJson(filmResponse, "title");
+    String director = extractFieldFromJson(filmResponse, "director");
+
+    Assert.assertNotNull("Validation Failed: Film title is missing.", title);
+    Assert.assertNotNull("Validation Failed: Film director is missing.", director);
+
+    LOG.info("Assertion Passed: Film correlation successful. Title: '" + title + "' | Director: " + director);
+  }
 }
